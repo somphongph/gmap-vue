@@ -1,5 +1,7 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
-  </div>
+	<v-responsive class="mx-auto" max-width="1152">
+		<v-container>
+			About
+		</v-container>
+	</v-responsive>
 </template>
