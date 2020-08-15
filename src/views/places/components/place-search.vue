@@ -5,43 +5,25 @@
 				<v-col>
 					<v-card class="mb-4">
 						<v-card-title>
-							<h4>Location</h4>
+							<h4>Find Restaurang</h4>
 						</v-card-title>
 
 						<v-form>
 							<v-container>
 								<v-row>
-									<v-col>
-										<!-- <ddl-city
-											:obj-ddl-value.sync="
-												ddlCitySelected
-											"
-										></ddl-city> -->
-									</v-col>
-								</v-row>
-								<v-row>
-									<v-col>
+									<v-col cols="12" md="4">
 										<v-text-field
 											label="Find restaurang in"
-											append-outer-icon="mdi-send"
-											clearable
+											append-outer-icon="mdi-magnify"
 											v-model.trim="keyword"
 											@click:append-outer="searchPlace"
+											width="50px"
 										></v-text-field>
-
-										<!-- <v-btn
-											color="primary"
-											@click="searchPlace()"
-										>
-											<v-icon left>fa fa-search</v-icon>
-											Search
-										</v-btn> -->
 									</v-col>
 								</v-row>
 
 								<v-row>
 									<v-col>
-										<h4 class="mb-2">Maps</h4>
 										<gmap-map
 											:center="center"
 											:zoom="12"
@@ -51,8 +33,19 @@
 												:key="index"
 												v-for="(m, index) in markers"
 												:position="m.position"
-												@click="center = m.position"
+												:label="m.markerLabel"
+												:clickable="true"
+												:draggable="true"
+												:text="keyword"
+												@click="openWindow(m.position)"
 											></gmap-marker>
+											<gmap-info-window
+												@closeclick="windowOpen = false"
+												:opened="windowOpen"
+												:position="infowindow"
+											>
+												asdf
+											</gmap-info-window>
 										</gmap-map>
 									</v-col>
 								</v-row>
@@ -78,6 +71,8 @@ import { Vue, Component } from 'vue-property-decorator';
 import placeService from '../services/place.service';
 import Place from '../models/place';
 import Location from '../models/location';
+import Marker from '../models/marker';
+import MarkerLabel from '../models/marker-label';
 
 @Component({
 	components: {
@@ -86,19 +81,18 @@ import Location from '../models/location';
 })
 export default class PlaceForm extends Vue {
 	private center: Location = { lat: 13.82825, lng: 100.5284507 };
-	private markers = [];
+	private markers: Marker[] = [];
 	private places!: Place[];
-	private currentPlace = null;
 	private keyword = 'Bang sue';
+	private windowOpen = false;
+	private infowindow = this.center;
+
+	private openWindow(position: Location) {
+		this.infowindow = position;
+		this.windowOpen = true;
+	}
 
 	private async searchPlace() {
-		// Show validate
-		// this.$v.dr.$touch();
-
-		// if (this.$v.dr.$error) {
-		// 	return;
-		// }
-
 		const params = {
 			keyword: this.keyword
 		};
@@ -107,31 +101,33 @@ export default class PlaceForm extends Vue {
 			this.markers = [];
 
 			const res = await placeService.list(params);
-			this.places = res.data;
+			if (res.status === 200) {
+				this.places = res.data;
+				this.places.map((place: Place) => {
+					const position: Location = {
+						lat: place.geometry.location.lat,
+						lng: place.geometry.location.lng
+					};
 
-			this.places.map((place: Place) => {
-				const marker = {
-					lat: place.geometry.location.lat,
-					lng: place.geometry.location.lng
-				};
-				this.markers.push({ position: marker });
-			});
+					const markerLabel: MarkerLabel = {
+						color: 'blue',
+						fontWeight: 'bold',
+						text: place.name
+					};
 
-			// const marker = {
-			// 	lat: this.places.geometry.location.lat,
-			// 	lng: this.places.geometry.location.lng
-			// };
-			// this.markers.push({ position: marker });
+					const marker: Marker = {
+						position,
+						markerLabel
+					};
 
-			// console.log(this.places);
-			console.log(this.places);
-
-			// this.notifySaveSuccess(res.data.description);
-			// this.$emit('save-result', res.data.code);
+					this.markers.push(marker);
+					this.center = position;
+				});
+			} else {
+				console.error(res.data.description);
+			}
 		} catch (error) {
-			// if (error.response.status !== 403) {
-			// 	console.error(error);
-			// }
+			console.error(error);
 		}
 	}
 }
