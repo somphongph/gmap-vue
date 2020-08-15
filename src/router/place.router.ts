@@ -7,7 +7,7 @@ const router = [
 		component: Page,
 		children: [
 			{
-				path: 'list',
+				path: 'search',
 				name: 'place-search',
 				component: PlaceSearch
 			}

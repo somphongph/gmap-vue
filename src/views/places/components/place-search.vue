@@ -3,119 +3,136 @@
 		<v-container>
 			<v-row>
 				<v-col>
-					<div>
-						<h5>เชียงใหม่ . เมืองคอง . Stay</h5>
-						<h1>ทดสอบ โฮมสเตย์</h1>
-						<h4>฿฿ . HomeStay</h4>
-					</div>
-				</v-col>
-			</v-row>
-			<v-row>
-				<v-col md="8">
-					<v-row>
-						<v-col class="pb-1">
-							<v-img
-								src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-							></v-img>
-						</v-col>
-					</v-row>
-					<v-row class="px-2">
-						<v-col cols="4" class="pa-1">
-							<v-img
-								src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-							></v-img>
-						</v-col>
-						<v-col cols="4" class="pa-1">
-							<v-img
-								src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-							></v-img>
-						</v-col>
-						<v-col cols="4" class="pa-1">
-							<v-img
-								src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
-							></v-img>
-						</v-col>
-					</v-row>
-
-					<v-divider class="mt-3 mb-5"></v-divider>
-
-					<div>
-						<div class="text--primary">
-							HomeStay เมืองคอง สัมผัสบรรยากาศสบายๆ <br />
-							แบบวิถีชนบท มีกิจกรรม ดำนา ชมหมอก ดูน้ำตก
-						</div>
-					</div>
-					<v-divider class="mt-3 mb-5"></v-divider>
-				</v-col>
-				<v-col md="4">
-					<v-card class="mb-5" outlined>
+					<v-card class="mb-4">
 						<v-card-title>
-							<h4>Contact</h4>
+							<h4>Location</h4>
 						</v-card-title>
-						<v-card-text>
-							Ratchadapisek Rd., Huay Khwang, Bangkok, Thailand.
-							<br />
-							Website: tripgator.com <br />
-							Facebook: facebook.com/tripgatordotcom <br />
-							Instargram: instagram.com/tripgatordotcom <br />
-							Line: @tripgatordotcom
-						</v-card-text>
+
+						<v-form>
+							<v-container>
+								<v-row>
+									<v-col>
+										<!-- <ddl-city
+											:obj-ddl-value.sync="
+												ddlCitySelected
+											"
+										></ddl-city> -->
+									</v-col>
+								</v-row>
+								<v-row>
+									<v-col>
+										<v-text-field
+											label="Find restaurang in"
+											append-outer-icon="mdi-send"
+											clearable
+											v-model.trim="keyword"
+											@click:append-outer="searchPlace"
+										></v-text-field>
+
+										<!-- <v-btn
+											color="primary"
+											@click="searchPlace()"
+										>
+											<v-icon left>fa fa-search</v-icon>
+											Search
+										</v-btn> -->
+									</v-col>
+								</v-row>
+
+								<v-row>
+									<v-col>
+										<h4 class="mb-2">Maps</h4>
+										<gmap-map
+											:center="center"
+											:zoom="12"
+											style="width:100%;  height: 600px;"
+										>
+											<gmap-marker
+												:key="index"
+												v-for="(m, index) in markers"
+												:position="m.position"
+												@click="center = m.position"
+											></gmap-marker>
+										</gmap-map>
+									</v-col>
+								</v-row>
+							</v-container>
+						</v-form>
 					</v-card>
 				</v-col>
 			</v-row>
 			<v-row>
-				<v-col md="8">
-					<v-card class="mb-5" outlined>
-						<v-card-title primary-title>
-							<h4>Maps</h4>
-						</v-card-title>
-
-						<v-card-text> </v-card-text>
-					</v-card>
-					<v-card class="mb-5" outlined>
-						<v-card-title primary-title>
-							<h4>Reviews</h4>
-						</v-card-title>
-
-						<v-card-text> </v-card-text>
-					</v-card>
-					<v-card class="mb-5" outlined>
-						<v-card-title primary-title>
-							<h4>Q & A</h4>
-						</v-card-title>
-
-						<v-card-text> </v-card-text>
-					</v-card>
-				</v-col>
-				<v-col md="4">
-					<v-card class="mb-5" outlined>
-						<v-card-title primary-title>
-							<h4>What is Nearby?</h4>
-						</v-card-title>
-						<v-card-title primary-title>
-							<h5>Travel</h5>
-						</v-card-title>
-						<v-card-text> </v-card-text>
-						<v-card-title primary-title>
-							<h5>Food & Drink</h5>
-						</v-card-title>
-						<v-card-text> </v-card-text>
-						<v-card-title primary-title>
-							<h5>Stay</h5>
-						</v-card-title>
-						<v-card-text> </v-card-text>
-					</v-card>
-				</v-col>
+				<v-col md="8"> </v-col>
+				<v-col md="4"> </v-col>
+			</v-row>
+			<v-row>
+				<v-col md="8"> </v-col>
+				<v-col md="4"> </v-col>
 			</v-row>
 		</v-container>
 	</v-responsive>
 </template>
 
-<script>
+<script lang="ts">
 import { Vue, Component } from 'vue-property-decorator';
+import placeService from '../services/place.service';
+import Place from '../models/place';
+import Location from '../models/location';
 
 @Component({
-	components: {}
+	components: {
+		// VueGoogleMaps
+	}
 })
-export default class PlaceForm extends Vue {}
+export default class PlaceForm extends Vue {
+	private center: Location = { lat: 13.82825, lng: 100.5284507 };
+	private markers = [];
+	private places!: Place[];
+	private currentPlace = null;
+	private keyword = 'Bang sue';
+
+	private async searchPlace() {
+		// Show validate
+		// this.$v.dr.$touch();
+
+		// if (this.$v.dr.$error) {
+		// 	return;
+		// }
+
+		const params = {
+			keyword: this.keyword
+		};
+
+		try {
+			this.markers = [];
+
+			const res = await placeService.list(params);
+			this.places = res.data;
+
+			this.places.map((place: Place) => {
+				const marker = {
+					lat: place.geometry.location.lat,
+					lng: place.geometry.location.lng
+				};
+				this.markers.push({ position: marker });
+			});
+
+			// const marker = {
+			// 	lat: this.places.geometry.location.lat,
+			// 	lng: this.places.geometry.location.lng
+			// };
+			// this.markers.push({ position: marker });
+
+			// console.log(this.places);
+			console.log(this.places);
+
+			// this.notifySaveSuccess(res.data.description);
+			// this.$emit('save-result', res.data.code);
+		} catch (error) {
+			// if (error.response.status !== 403) {
+			// 	console.error(error);
+			// }
+		}
+	}
+}
 </script>
