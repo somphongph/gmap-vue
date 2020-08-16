@@ -102,8 +102,6 @@ export default class PlaceSearch extends Vue {
 	private placeId = '';
 
 	private openWindow(id: string, position: Location) {
-		console.log(position);
-
 		this.placeId = id;
 		this.infoWindowPosition = position;
 		this.infoWindowOpen = true;
