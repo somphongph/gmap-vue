@@ -49,8 +49,8 @@
 												:position="infoWindowPosition"
 												:options="{
 													pixelOffset: {
-														width: 100,
-														height: 20
+														width: 0,
+														height: -40
 													}
 												}"
 											>
@@ -98,10 +98,12 @@ export default class PlaceSearch extends Vue {
 	private places!: Place[];
 	private keyword = 'Bang sue';
 	private infoWindowOpen = false;
-	private infoWindowPosition: Location = this.center;
+	private infoWindowPosition: Location = { lat: 13.82825, lng: 100.5284507 };
 	private placeId = '';
 
 	private openWindow(id: string, position: Location) {
+		console.log(position);
+
 		this.placeId = id;
 		this.infoWindowPosition = position;
 		this.infoWindowOpen = true;
