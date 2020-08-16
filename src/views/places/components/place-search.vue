@@ -37,14 +37,26 @@
 												:clickable="true"
 												:draggable="true"
 												:text="keyword"
-												@click="openWindow(m.position)"
+												@click="
+													openWindow(m.id, m.position)
+												"
 											></gmap-marker>
 											<gmap-info-window
-												@closeclick="windowOpen = false"
-												:opened="windowOpen"
-												:position="infowindow"
+												@closeclick="
+													infoWindowOpen = false
+												"
+												:opened="infoWindowOpen"
+												:position="infoWindowPosition"
+												:options="{
+													pixelOffset: {
+														width: 0,
+														height: -40
+													}
+												}"
 											>
-												asdf
+												<place-detail
+													:place-id-prop="placeId"
+												></place-detail>
 											</gmap-info-window>
 										</gmap-map>
 									</v-col>
@@ -73,23 +85,28 @@ import Place from '../models/place';
 import Location from '../models/location';
 import Marker from '../models/marker';
 import MarkerLabel from '../models/marker-label';
+import PlaceDetail from './place-detail.vue';
 
 @Component({
 	components: {
-		// VueGoogleMaps
+		PlaceDetail
 	}
 })
-export default class PlaceForm extends Vue {
+export default class PlaceSearch extends Vue {
 	private center: Location = { lat: 13.82825, lng: 100.5284507 };
 	private markers: Marker[] = [];
 	private places!: Place[];
 	private keyword = 'Bang sue';
-	private windowOpen = false;
-	private infowindow = this.center;
+	private infoWindowOpen = false;
+	private infoWindowPosition: Location = { lat: 13.82825, lng: 100.5284507 };
+	private placeId = '';
 
-	private openWindow(position: Location) {
-		this.infowindow = position;
-		this.windowOpen = true;
+	private openWindow(id: string, position: Location) {
+		console.log(position);
+
+		this.placeId = id;
+		this.infoWindowPosition = position;
+		this.infoWindowOpen = true;
 	}
 
 	private async searchPlace() {
@@ -116,6 +133,7 @@ export default class PlaceForm extends Vue {
 					};
 
 					const marker: Marker = {
+						id: place.id,
 						position,
 						markerLabel
 					};
