@@ -3,13 +3,19 @@
 		<!-- <v-app-bar-nav-icon class="hidden-md-and-up" @click="toggleDrawer" /> -->
 		<v-container>
 			<v-row>
-				<div class="d-flex align-center">
+				<div class="d-flex align-center mr-10">
 					<router-link to="/">
 						<v-toolbar-title class="primary--text headline">
-							<span class="font-weight-bold">Place Search</span>
+							<span class="font-weight-bold">Gmap</span>
 						</v-toolbar-title>
 					</router-link>
 				</div>
+
+				<v-btn class="hidden-sm-and-down" text>
+					<router-link :to="{ name: 'place-search' }">
+						Place
+					</router-link>
+				</v-btn>
 
 				<v-spacer />
 			</v-row>

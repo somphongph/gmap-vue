@@ -1,17 +1,17 @@
 <template>
-	<v-responsive class="mx-auto" max-width="1152">
-		<v-container>
-			<v-row>
-				<v-col md="9"> </v-col>
-			</v-row>
-		</v-container>
-	</v-responsive>
+	<div>
+		<place-search></place-search>
+	</div>
 </template>
 
 <script>
-// @ is an alias to /src
+import { Vue, Component } from 'vue-property-decorator';
+import PlaceSearch from '@/views/places/components/place-search.vue';
 
-export default {
-	name: 'Home'
-};
+@Component({
+	components: {
+		PlaceSearch
+	}
+})
+export default class Home extends Vue {}
 </script>
